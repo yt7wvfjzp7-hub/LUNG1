@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#fff3f5" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
   <title>写给最特别的你 · 生日快乐</title>
   <meta name="description" content="一份写给最特别的人的生日祝福。" />
   <style>
@@ -281,6 +283,19 @@
       color: #b18491;
       font-size: 12px;
     }
+    .app-card {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 28px 24px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,.82);
+      border-radius: 28px;
+      background: rgba(255,255,255,.62);
+      box-shadow: var(--shadow);
+    }
+    .app-card h2 { margin: 0 0 10px; font-family: "Bodoni 72", "Didot", "Baskerville", "Songti SC", serif; }
+    .app-card p { margin: 8px auto; max-width: 560px; color: var(--muted); line-height: 1.8; }
+    .install-steps { margin: 16px 0 0; color: #765563; font-size: 14px; line-height: 1.9; }
 
     .promise {
       display: grid;
@@ -415,6 +430,16 @@
     </section>
 
     <section>
+      <div class="app-card">
+        <div class="music-note">📱</div>
+        <h2>把这份祝福放进手机</h2>
+        <p>在 iPhone Safari 中打开后，点击底部“分享”按钮，再选择“添加到主屏幕”，它就会像 App 一样打开。</p>
+        <p class="install-steps">添加后会拥有独立图标、全屏界面，并支持缓存后的离线浏览。</p>
+        <button class="ghost-btn" id="installApp" type="button">添加到手机主屏幕</button>
+      </div>
+    </section>
+
+    <section>
       <div class="final-card">
         <h2>生日快乐，我的女孩 ♡</h2>
         <p>愿你眼里有光，心中有爱，脚下有路。<br />今天是你的生日，但我想把每一天都过成爱你的纪念日。</p>
@@ -531,6 +556,29 @@
       // Safari may block this first attempt; all playback buttons remain available as a fallback.
       playBirthdaySong();
     }, { once: true });
+
+    let deferredInstallPrompt;
+    const installApp = document.querySelector("#installApp");
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      installApp.textContent = "安装生日 App";
+    });
+    installApp.addEventListener("click", async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        installApp.textContent = "已发送安装请求 ♥";
+        return;
+      }
+      alert("iPhone：点击 Safari 底部的分享按钮，再选择“添加到主屏幕”。");
+    });
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      }, { once: true });
+    }
     celebrate.addEventListener("click", () => {
       for (let i = 0; i < 70; i++) {
         const piece = document.createElement("i");
