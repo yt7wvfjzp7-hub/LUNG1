@@ -1,8 +1,8 @@
 {
-  "name": "写给最特别的你 · 生日快乐",
-  "short_name": "生日快乐",
-  "description": "一份写给最特别的人的生日祝福。",
-  "lang": "zh-CN",
+  "name": "寫給最特別的你 · 生日快樂",
+  "short_name": "生日快樂",
+  "description": "一份寫給最特別的人的生日祝福。",
+  "lang": "zh-Hant-TW",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -24,3 +24,4 @@
     }
   ]
 }
+
